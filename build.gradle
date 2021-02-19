@@ -1,0 +1,60 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.qameta.allure:allure-gradle:2.3"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.3'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+allure {
+    version = '2.3'
+    autoconfigure = true
+    aspectjweaver = true
+    allureJavaVersion = version
+}
+
+dependencies {
+    testImplementation group: 'org.testng', name: 'testng', version: '7.1.0'
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.2.2'
+    implementation group: 'io.qameta.allure', name: 'allure-testng', version: '2.13.0'
+    implementation group: 'org.apache.poi', name: 'poi', version: '4.1.2'
+    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.2'
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-firefox-driver', version: '3.141.59'
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-chrome-driver', version: '3.141.59'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
+    }
+
+test {
+    useTestNG() {
+        useDefaultListeners = true
+        suites 'src/test/testng.xml'
+    }
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+    }
+    reports.html.setDestination(file("$buildDir/html"))
+}
+
+task smokeTests(type: Test) { // we define a task with name ‘smokeTests’
+    useTestNG() {
+        useDefaultListeners = true
+        suites 'src/test/testng.xml'
+        includeGroups 'SmokeTest' // We define the group name by using ‘includeGroups’ parameter.
+    }
+}
